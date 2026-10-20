@@ -3,419 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minhas Finanças - 50/30/20</title>
+    <title>Minhas Finanças 50/30/20</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #111827; }
-        .glass-card { background: rgba(31, 41, 55, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(75, 85, 99, 0.4); }
+        /* Ajuste do ícone do calendário para o tema escuro */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.7;
+            cursor: pointer;
+        }
     </style>
 </head>
-<body class="text-gray-100 antialiased min-h-screen pb-12 bg-gray-900">
+<body class="bg-gray-900 text-gray-100 min-h-screen p-4 sm:p-6 md:p-8 font-sans">
 
-    <!-- Navbar -->
-    <nav class="bg-gray-800 shadow-lg sticky top-0 z-50 border-b border-gray-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center gap-2">
-                    <i class="ph ph-wallet text-3xl text-indigo-400"></i>
-                    <span class="font-bold text-xl tracking-tight text-gray-100">Minhas Finanças</span>
-                </div>
+    <div class="max-w-5xl mx-auto space-y-6">
+
+        <!-- Cabeçalho -->
+        <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-800 p-6 rounded-2xl shadow-xl border border-gray-700 gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-emerald-400">Minhas Finanças</h1>
+                <p class="text-xs sm:text-sm text-gray-400">Gestão 50/30/20 & Investimentos</p>
             </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-6">
-
-        <!-- Dashboard Header -->
-        <div class="glass-card rounded-2xl shadow-sm p-6 mb-6">
-            <h2 class="text-2xl font-bold text-gray-100 mb-2">Visão Geral</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div>
-                    <p class="text-gray-400 mb-1">Renda Total Mensal (Receitas)</p>
-                    <p class="text-4xl font-bold text-indigo-400" id="totalIncomeDisplay">R$ 0,00</p>
-                </div>
-                <div class="bg-gray-700/50 p-4 rounded-xl border border-gray-600">
-                    <h3 class="font-semibold text-indigo-300 flex items-center gap-2">
-                        <i class="ph ph-info text-xl"></i> Regra 50/30/20
-                    </h3>
-                    <p class="text-sm text-gray-300 mt-1">
-                        O orçamento divide sua renda em: <strong class="text-gray-100">50%</strong> para Gastos Fixos (essenciais), <strong class="text-gray-100">30%</strong> para Gastos Variáveis (desejos) e <strong class="text-gray-100">20%</strong> para Investimentos (futuro).
-                    </p>
-                </div>
+            <div class="bg-gray-700/60 px-4 py-2 rounded-xl border border-gray-600 text-right w-full sm:w-auto">
+                <span class="text-xs text-gray-400 block">Saldo Atual</span>
+                <span id="saldo-total" class="text-xl font-extrabold text-emerald-400">R$ 0,00</span>
             </div>
-        </div>
+        </header>
 
-        <!-- 50/30/20 Rule Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <!-- 50% Fixos -->
-            <div class="glass-card rounded-2xl shadow-sm p-6 border-l-4 border-rose-500">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-200">Gastos Fixos</h3>
-                        <p class="text-sm text-gray-400">Meta: 50%</p>
-                    </div>
-                    <div class="p-2 bg-rose-500/20 text-rose-400 rounded-lg"><i class="ph ph-house text-xl"></i></div>
-                </div>
-                <div class="mb-2">
-                    <p class="text-sm text-gray-400">Orçamento Limite</p>
-                    <p class="text-xl font-semibold text-gray-100" id="limitFixed">R$ 0,00</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-400">Gasto Atual</p>
-                    <p class="text-xl font-semibold text-rose-400" id="actualFixed">R$ 0,00</p>
-                </div>
-                <!-- Progress Bar -->
-                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-4">
-                    <div class="bg-rose-500 h-2.5 rounded-full transition-all duration-500" id="progressFixed" style="width: 0%"></div>
-                </div>
+        <!-- Cards Metas 50/30/20 -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Total Receitas -->
+            <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-md">
+                <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Receita Total</p>
+                <p id="card-receita" class="text-2xl font-bold text-emerald-400 mt-1">R$ 0,00</p>
+                <span class="text-xs text-gray-500 mt-2 block">Base para o cálculo 50/30/20</span>
             </div>
 
-            <!-- 30% Variáveis -->
-            <div class="glass-card rounded-2xl shadow-sm p-6 border-l-4 border-amber-500">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-200">Gastos Variáveis</h3>
-                        <p class="text-sm text-gray-400">Meta: 30%</p>
-                    </div>
-                    <div class="p-2 bg-amber-500/20 text-amber-400 rounded-lg"><i class="ph ph-coffee text-xl"></i></div>
-                </div>
-                <div class="mb-2">
-                    <p class="text-sm text-gray-400">Orçamento Limite</p>
-                    <p class="text-xl font-semibold text-gray-100" id="limitVariable">R$ 0,00</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-400">Gasto Atual</p>
-                    <p class="text-xl font-semibold text-amber-400" id="actualVariable">R$ 0,00</p>
-                </div>
-                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-4">
-                    <div class="bg-amber-500 h-2.5 rounded-full transition-all duration-500" id="progressVariable" style="width: 0%"></div>
-                </div>
+            <!-- 50% Necessidades -->
+            <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-md">
+                <p class="text-xs font-semibold uppercase tracking-wider text-blue-400">Fixos (Max 50%)</p>
+                <p id="card-fixo" class="text-2xl font-bold text-gray-100 mt-1">R$ 0,00</p>
+                <p id="meta-fixo" class="text-xs text-gray-400 mt-2">Limite: R$ 0,00</p>
+            </div>
+
+            <!-- 30% Desejos -->
+            <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-md">
+                <p class="text-xs font-semibold uppercase tracking-wider text-purple-400">Variáveis (Max 30%)</p>
+                <p id="card-variavel" class="text-2xl font-bold text-gray-100 mt-1">R$ 0,00</p>
+                <p id="meta-variavel" class="text-xs text-gray-400 mt-2">Limite: R$ 0,00</p>
             </div>
 
             <!-- 20% Investimentos -->
-            <div class="glass-card rounded-2xl shadow-sm p-6 border-l-4 border-emerald-500">
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-200">Investimentos</h3>
-                        <p class="text-sm text-gray-400">Meta: 20%</p>
-                    </div>
-                    <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg"><i class="ph ph-trend-up text-xl"></i></div>
-                </div>
-                <div class="mb-2">
-                    <p class="text-sm text-gray-400">Orçamento Meta</p>
-                    <p class="text-xl font-semibold text-gray-100" id="limitInvest">R$ 0,00</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-400">Investido Atual</p>
-                    <p class="text-xl font-semibold text-emerald-400" id="actualInvest">R$ 0,00</p>
-                </div>
-                <div class="w-full bg-gray-700 rounded-full h-2.5 mt-4">
-                    <div class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" id="progressInvest" style="width: 0%"></div>
-                </div>
+            <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-md">
+                <p class="text-xs font-semibold uppercase tracking-wider text-amber-400">Investimentos (Min 20%)</p>
+                <p id="card-investimento" class="text-2xl font-bold text-gray-100 mt-1">R$ 0,00</p>
+                <p id="meta-investimento" class="text-xs text-gray-400 mt-2">Meta: R$ 0,00</p>
             </div>
         </div>
 
-        <!-- Addition Form & Chart -->
+        <!-- Seção Principal: Formulário + Gráficos -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Form -->
-            <div class="glass-card rounded-2xl shadow-sm p-6 lg:col-span-2">
-                <h3 class="text-xl font-semibold mb-4 text-gray-100">Adicionar Transação</h3>
+            <!-- Formulário de Transação -->
+            <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-lg lg:col-span-1">
+                <h2 class="text-lg font-bold text-gray-100 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    Nova Transação
+                </h2>
                 
-                <div id="messageBox" class="hidden mb-4 p-3 rounded-lg text-sm font-medium"></div>
-
-                <form id="transactionForm" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-1">Tipo de Transação</label>
-                            <select id="tType" class="w-full rounded-lg bg-gray-700 border-gray-600 text-gray-100 border p-2.5 focus:ring-indigo-500 focus:border-indigo-500" onchange="toggleInvestmentFields()">
-                                <option value="receita">Receita (Salário, Extra)</option>
-                                <option value="fixa">Despesa Fixa (Aluguel, Contas)</option>
-                                <option value="variavel">Despesa Variável (Lazer, Compras)</option>
-                                <option value="investimento">Investimento</option>
-                            </select>
-                        </div>
-                        <div id="investCategoryWrapper" class="hidden">
-                            <label class="block text-sm font-medium text-gray-300 mb-1">Categoria de Investimento</label>
-                            <select id="tInvestCat" class="w-full rounded-lg bg-gray-700 border-gray-600 text-gray-100 border p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-                                <option value="cdb">CDB / Renda Fixa</option>
-                                <option value="acao_itsa4">Ação - ITSA4</option>
-                                <option value="acao_mglu3">Ação - MGLU3</option>
-                                <option value="fii_cdib11">FII - CDIB11</option>
-                                <option value="outro">Outro</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-1">Descrição</label>
-                            <input type="text" id="tDesc" required placeholder="Ex: Salário, Aluguel" class="w-full rounded-lg bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400 border p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-300 mb-1">Valor (R$)</label>
-                            <input type="number" id="tAmount" required min="0.01" step="0.01" placeholder="0.00" class="w-full rounded-lg bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400 border p-2.5 focus:ring-indigo-500 focus:border-indigo-500">
-                        </div>
+                <form id="form-transacao" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Descrição</label>
+                        <input type="text" id="trans-desc" placeholder="Ex: Salário, Aluguel, ITSA4..." required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-100 focus:outline-none focus:border-emerald-500 transition">
                     </div>
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex justify-center items-center gap-2">
-                        <i class="ph ph-plus-circle text-xl"></i> Adicionar
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Valor (R$)</label>
+                        <input type="number" step="0.01" id="trans-valor" placeholder="0,00" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-100 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+
+                    <!-- Novo Campo: Data da Transferência -->
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Data da Transferência</label>
+                        <input type="date" id="trans-data" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-100 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Tipo de Transação</label>
+                        <select id="trans-tipo" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-100 focus:outline-none focus:border-emerald-500 transition">
+                            <option value="receita">Receita (+)</option>
+                            <option value="fixo">Gasto Fixo (50%)</option>
+                            <option value="variavel">Gasto Variável (30%)</option>
+                            <option value="investimento">Investimento (20%)</option>
+                        </select>
+                    </div>
+
+                    <!-- Subcategoria para Investimentos -->
+                    <div id="container-subcategoria" class="hidden">
+                        <label class="block text-xs font-medium text-amber-400 mb-1">Ativo / Tipo de Aporte</label>
+                        <select id="trans-subcategoria" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-100 focus:outline-none focus:border-amber-500 transition">
+                            <option value="Ações - ITSA4">Ações - ITSA4</option>
+                            <option value="Ações - MGLU3">Ações - MGLU3</option>
+                            <option value="FII - CDIB11">FII - CDIB11</option>
+                            <option value="Renda Fixa - CDB">Renda Fixa - CDB</option>
+                            <option value="Outros Investimentos">Outros</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold py-3 px-4 rounded-xl shadow-lg transition active:scale-[0.98]">
+                        Adicionar Registro
                     </button>
                 </form>
             </div>
 
-            <!-- Chart -->
-            <div class="glass-card rounded-2xl shadow-sm p-6 flex flex-col justify-center items-center">
-                <h3 class="text-lg font-semibold w-full text-center mb-4 text-gray-200">Distribuição Atual</h3>
-                <div class="w-48 h-48 relative">
-                    <canvas id="budgetChart"></canvas>
+            <!-- Gráfico e Resumo -->
+            <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-lg lg:col-span-2 flex flex-col justify-between">
+                <h2 class="text-lg font-bold text-gray-100 mb-2">Distribuição de Gastos</h2>
+                <div class="relative flex-1 flex items-center justify-center min-h-[220px]">
+                    <canvas id="grafico-financas" class="max-h-[220px]"></canvas>
                 </div>
-            </div>
-        </div>
-
-        <!-- Lists (Transactions & Investments) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-            
-            <!-- Transactions List -->
-            <div class="glass-card rounded-2xl shadow-sm p-6">
-                <h3 class="text-xl font-semibold mb-4 text-gray-100">Últimas Transações</h3>
-                <div class="overflow-y-auto max-h-80 pr-2 space-y-3" id="transactionsList">
-                    <!-- Transactions will be injected here -->
-                    <p class="text-gray-500 text-sm text-center py-4">Nenhuma transação adicionada.</p>
-                </div>
-            </div>
-
-            <!-- Investments List -->
-            <div class="glass-card rounded-2xl shadow-sm p-6">
-                <h3 class="text-xl font-semibold mb-4 text-gray-100">Carteira de Investimentos</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-300">
-                        <thead class="bg-gray-700 text-gray-200 uppercase font-semibold text-xs rounded-lg">
-                            <tr>
-                                <th class="px-4 py-3 rounded-tl-lg">Ativo / Categoria</th>
-                                <th class="px-4 py-3 text-right rounded-tr-lg">Total Alocado</th>
-                            </tr>
-                        </thead>
-                        <tbody id="investmentsList" class="divide-y divide-gray-700">
-                            <!-- Investments will be injected here -->
-                            <tr><td colspan="2" class="text-center py-4 text-gray-500">Nenhum investimento registrado.</td></tr>
-                        </tbody>
-                    </table>
+                <!-- Barra de Progresso do Balanço -->
+                <div class="mt-4 pt-4 border-t border-gray-700 space-y-2">
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <span>Comprometimento do Orçamento</span>
+                        <span id="percentual-uso">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-900 rounded-full h-2.5 overflow-hidden">
+                        <div id="barra-progresso" class="bg-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
                 </div>
             </div>
 
         </div>
+
+        <!-- Lista de Histórico de Transações -->
+        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-lg">
+            <h2 class="text-lg font-bold text-gray-100 mb-4">Histórico de Transações</h2>
+            <div id="lista-transacoes" class="space-y-3">
+                <p class="text-sm text-gray-500 text-center py-4">Nenhuma transação registrada ainda.</p>
+            </div>
+        </div>
+
     </div>
 
+    <!-- Script da Aplicação -->
     <script>
-        // State
-        let transactions = JSON.parse(localStorage.getItem('finances_transactions')) || [];
-        let chartInstance = null;
+        // Inicialização dos Dados
+        let transacoes = JSON.parse(localStorage.getItem('financas_db')) || [];
+        let meuGrafico = null;
 
-        // Form elements
-        const form = document.getElementById('transactionForm');
-        const typeSelect = document.getElementById('tType');
-        const investCatWrapper = document.getElementById('investCategoryWrapper');
-        const messageBox = document.getElementById('messageBox');
+        // Elementos do DOM
+        const form = document.getElementById('form-transacao');
+        const selectTipo = document.getElementById('trans-tipo');
+        const containerSubcat = document.getElementById('container-subcategoria');
+        const inputData = document.getElementById('trans-data');
 
-        // Helpers
-        const formatCurrency = (value) => {
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-        };
+        // Preencher input de data com a data atual por padrão
+        inputData.value = new Date().toISOString().split('T')[0];
 
-        const showMessage = (msg, isError = false) => {
-            messageBox.textContent = msg;
-            messageBox.className = `mb-4 p-3 rounded-lg text-sm font-medium ${isError ? 'bg-red-900/50 text-red-400 border border-red-800' : 'bg-green-900/50 text-green-400 border border-green-800'} block`;
-            setTimeout(() => { messageBox.classList.add('hidden'); }, 3000);
-        };
-
-        const toggleInvestmentFields = () => {
-            if (typeSelect.value === 'investimento') {
-                investCatWrapper.classList.remove('hidden');
+        // Alternar exibição do campo de subcategoria para Investimentos
+        selectTipo.addEventListener('change', (e) => {
+            if (e.target.value === 'investimento') {
+                containerSubcat.classList.remove('hidden');
             } else {
-                investCatWrapper.classList.add('hidden');
+                containerSubcat.classList.add('hidden');
             }
-        };
+        });
 
-        // Core Logic
-        const calculateDashboard = () => {
-            let totalIncome = 0;
-            let actualFixed = 0;
-            let actualVariable = 0;
-            let actualInvest = 0;
+        // Adicionar Transação
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
 
-            const investmentTotals = {
-                'cdb': 0, 'acao_itsa4': 0, 'acao_mglu3': 0, 'fii_cdib11': 0, 'outro': 0
+            const desc = document.getElementById('trans-desc').value;
+            const valor = parseFloat(document.getElementById('trans-valor').value);
+            const data = document.getElementById('trans-data').value;
+            const tipo = selectTipo.value;
+            const subcategoria = tipo === 'investimento' ? document.getElementById('trans-subcategoria').value : null;
+
+            const novaTransacao = {
+                id: Date.now(),
+                desc,
+                valor,
+                data,
+                tipo,
+                subcategoria
             };
 
-            transactions.forEach(t => {
-                if (t.type === 'receita') totalIncome += t.amount;
-                if (t.type === 'fixa') actualFixed += t.amount;
-                if (t.type === 'variavel') actualVariable += t.amount;
-                if (t.type === 'investimento') {
-                    actualInvest += t.amount;
-                    if(investmentTotals[t.investCat] !== undefined) {
-                        investmentTotals[t.investCat] += t.amount;
-                    }
-                }
+            transacoes.push(novaTransacao);
+            salvarEAtualizar();
+
+            // Reset do Formulário
+            form.reset();
+            inputData.value = new Date().toISOString().split('T')[0];
+            containerSubcat.classList.add('hidden');
+        });
+
+        // Excluir Transação
+        function excluirTransacao(id) {
+            transacoes = transacoes.filter(t => t.id !== id);
+            salvarEAtualizar();
+        }
+
+        // Salvar no localStorage e Recalcular
+        function salvarEAtualizar() {
+            localStorage.setItem('financas_db', JSON.stringify(transacoes));
+            atualizarInterface();
+        }
+
+        // Formatar data AAAA-MM-DD para DD/MM/AAAA
+        function formatarData(dataIso) {
+            if (!dataIso) return 'Data N/A';
+            const partes = dataIso.split('-');
+            if (partes.length !== 3) return dataIso;
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        // Atualizar Dashboard e Interface
+        function atualizarInterface() {
+            let totalReceita = 0;
+            let totalFixo = 0;
+            let totalVariavel = 0;
+            let totalInvestimento = 0;
+
+            transacoes.forEach(t => {
+                if (t.tipo === 'receita') totalReceita += t.valor;
+                if (t.tipo === 'fixo') totalFixo += t.valor;
+                if (t.tipo === 'variavel') totalVariavel += t.valor;
+                if (t.tipo === 'investimento') totalInvestimento += t.valor;
             });
 
-            // 50/30/20 Targets
-            const targetFixed = totalIncome * 0.50;
-            const targetVariable = totalIncome * 0.30;
-            const targetInvest = totalIncome * 0.20;
+            const totalGastosEInvest = totalFixo + totalVariavel + totalInvestimento;
+            const saldoTotal = totalReceita - (totalFixo + totalVariavel);
 
-            // Update UI DOM
-            document.getElementById('totalIncomeDisplay').textContent = formatCurrency(totalIncome);
-            
-            document.getElementById('limitFixed').textContent = formatCurrency(targetFixed);
-            document.getElementById('actualFixed').textContent = formatCurrency(actualFixed);
-            document.getElementById('progressFixed').style.width = targetFixed > 0 ? `${Math.min(100, (actualFixed/targetFixed)*100)}%` : '0%';
-            if(actualFixed > targetFixed && targetFixed > 0) document.getElementById('progressFixed').classList.add('bg-red-700');
-            else document.getElementById('progressFixed').classList.replace('bg-red-700', 'bg-rose-500');
+            // Metas 50/30/20
+            const metaFixo = totalReceita * 0.50;
+            const metaVariavel = totalReceita * 0.30;
+            const metaInvest = totalReceita * 0.20;
 
-            document.getElementById('limitVariable').textContent = formatCurrency(targetVariable);
-            document.getElementById('actualVariable').textContent = formatCurrency(actualVariable);
-            document.getElementById('progressVariable').style.width = targetVariable > 0 ? `${Math.min(100, (actualVariable/targetVariable)*100)}%` : '0%';
+            // Atualiza Cards
+            document.getElementById('saldo-total').innerText = `R$ ${saldoTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('card-receita').innerText = `R$ ${totalReceita.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('card-fixo').innerText = `R$ ${totalFixo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('card-variavel').innerText = `R$ ${totalVariavel.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('card-investimento').innerText = `R$ ${totalInvestimento.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            document.getElementById('limitInvest').textContent = formatCurrency(targetInvest);
-            document.getElementById('actualInvest').textContent = formatCurrency(actualInvest);
-            document.getElementById('progressInvest').style.width = targetInvest > 0 ? `${Math.min(100, (actualInvest/targetInvest)*100)}%` : '0%';
+            document.getElementById('meta-fixo').innerText = `Teto (50%): R$ ${metaFixo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('meta-variavel').innerText = `Teto (30%): R$ ${metaVariavel.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('meta-investimento').innerText = `Meta (20%): R$ ${metaInvest.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            updateLists(investmentTotals);
-            updateChart(actualFixed, actualVariable, actualInvest);
-        };
+            // Progresso do Orçamento
+            const percentual = totalReceita > 0 ? Math.min(100, Math.round((totalGastosEInvest / totalReceita) * 100)) : 0;
+            document.getElementById('percentual-uso').innerText = `${percentual}%`;
+            document.getElementById('barra-progresso').style.width = `${percentual}%`;
 
-        const updateLists = (investmentTotals) => {
-            const listEl = document.getElementById('transactionsList');
-            const investListEl = document.getElementById('investmentsList');
-
-            // Transactions
-            listEl.innerHTML = '';
-            if (transactions.length === 0) {
-                listEl.innerHTML = '<p class="text-gray-500 text-sm text-center py-4">Nenhuma transação adicionada.</p>';
+            // Atualiza Lista
+            const listaContainer = document.getElementById('lista-transacoes');
+            if (transacoes.length === 0) {
+                listaContainer.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">Nenhuma transação registrada ainda.</p>`;
             } else {
-                // Show latest first
-                [...transactions].reverse().forEach(t => {
-                    let icon, color, sign = '';
-                    if(t.type === 'receita') { icon = 'ph-arrow-up'; color = 'text-green-400 bg-green-500/20'; sign = '+'; }
-                    else if(t.type === 'investimento') { icon = 'ph-trend-up'; color = 'text-emerald-400 bg-emerald-500/20'; sign = '-'; }
-                    else { icon = 'ph-arrow-down'; color = 'text-rose-400 bg-rose-500/20'; sign = '-'; }
+                listaContainer.innerHTML = [...transacoes].reverse().map(t => {
+                    const badgeCore = {
+                        receita: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                        fixo: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+                        variavel: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+                        investimento: 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                    }[t.tipo];
 
-                    listEl.innerHTML += `
-                        <div class="flex items-center justify-between p-3 bg-gray-800 rounded-lg border border-gray-700">
+                    const sinal = t.tipo === 'receita' ? '+' : '-';
+                    const corValor = t.tipo === 'receita' ? 'text-emerald-400' : 'text-gray-200';
+
+                    return `
+                        <div class="flex items-center justify-between p-3.5 bg-gray-900/60 rounded-xl border border-gray-700/50 hover:border-gray-600 transition">
                             <div class="flex items-center gap-3">
-                                <div class="p-2 rounded-full ${color}"><i class="ph ${icon} text-lg"></i></div>
+                                <span class="px-2.5 py-1 text-xs font-semibold rounded-lg border ${badgeCore} uppercase tracking-wider">
+                                    ${t.tipo}
+                                </span>
                                 <div>
-                                    <p class="font-medium text-gray-200">${t.desc}</p>
-                                    <p class="text-xs text-gray-400 uppercase">${t.type.replace('variavel', 'variável')}</p>
+                                    <p class="text-sm font-medium text-gray-200">${t.desc}</p>
+                                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                                        <span>📅 ${formatarData(t.data)}</span>
+                                        ${t.subcategoria ? `<span class="text-amber-400/90">• ${t.subcategoria}</span>` : ''}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="font-semibold ${t.type === 'receita' ? 'text-green-400' : 'text-gray-300'}">
-                                ${sign} ${formatCurrency(t.amount)}
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm font-bold ${corValor}">
+                                    ${sinal} R$ ${t.valor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                                </span>
+                                <button onclick="excluirTransacao(${t.id})" class="text-gray-500 hover:text-rose-400 p-1 rounded-lg transition" title="Excluir">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
                             </div>
                         </div>
                     `;
-                });
+                }).join('');
             }
 
-            // Investments Portfolio
-            investListEl.innerHTML = '';
-            let hasInvestments = false;
-            const labels = {
-                'cdb': 'CDB / Renda Fixa',
-                'acao_itsa4': 'Ação - ITSA4',
-                'acao_mglu3': 'Ação - MGLU3',
-                'fii_cdib11': 'FII - CDIB11',
-                'outro': 'Outros Investimentos'
-            };
+            // Atualizar Gráfico
+            atualizarGrafico(totalFixo, totalVariavel, totalInvestimento);
+        }
 
-            for (const [key, val] of Object.entries(investmentTotals)) {
-                if (val > 0) {
-                    hasInvestments = true;
-                    investListEl.innerHTML += `
-                        <tr class="hover:bg-gray-700 transition-colors">
-                            <td class="px-4 py-3 font-medium text-gray-300">${labels[key]}</td>
-                            <td class="px-4 py-3 text-right font-semibold text-emerald-400">${formatCurrency(val)}</td>
-                        </tr>
-                    `;
-                }
-            }
-
-            if (!hasInvestments) {
-                investListEl.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-gray-500">Nenhum investimento registrado.</td></tr>';
-            }
-        };
-
-        const updateChart = (fixed, variable, invest) => {
-            const ctx = document.getElementById('budgetChart').getContext('2d');
-            const data = [fixed, variable, invest];
+        // Renderização do Gráfico com Chart.js
+        function atualizarGrafico(fixo, variavel, invest) {
+            const ctx = document.getElementById('grafico-financas').getContext('2d');
             
-            // Se tudo for zero, mostra um cinza escuro no lugar
-            const isEmpty = data.every(v => v === 0);
+            if (meuGrafico) {
+                meuGrafico.destroy();
+            }
 
-            if (chartInstance) {
-                chartInstance.data.datasets[0].data = isEmpty ? [1] : data;
-                chartInstance.data.datasets[0].backgroundColor = isEmpty ? ['#374151'] : ['#f43f5e', '#f59e0b', '#10b981'];
-                chartInstance.update();
-            } else {
-                chartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: isEmpty ? ['Sem dados'] : ['Fixos', 'Variáveis', 'Investimentos'],
-                        datasets: [{
-                            data: isEmpty ? [1] : data,
-                            backgroundColor: isEmpty ? ['#374151'] : ['#f43f5e', '#f59e0b', '#10b981'],
-                            borderWidth: 0,
-                            cutout: '75%'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: !isEmpty }
+            meuGrafico = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Gastos Fixos (50%)', 'Gastos Variáveis (30%)', 'Investimentos (20%)'],
+                    datasets: [{
+                        data: [fixo, variavel, invest],
+                        backgroundColor: ['#3b82f6', '#a855f7', '#f59e0b'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#9ca3af', font: { size: 11 } }
                         }
-                    }
-                });
-            }
-        };
-
-        // Form Submit
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const type = document.getElementById('tType').value;
-            const desc = document.getElementById('tDesc').value;
-            const amount = parseFloat(document.getElementById('tAmount').value);
-            const investCat = type === 'investimento' ? document.getElementById('tInvestCat').value : null;
-
-            if (isNaN(amount) || amount <= 0) {
-                showMessage('Por favor, insira um valor válido.', true);
-                return;
-            }
-
-            transactions.push({
-                id: Date.now(),
-                type,
-                desc,
-                amount,
-                investCat,
-                date: new Date()
+                    },
+                    cutout: '70%'
+                }
             });
+        }
 
-            // Persistência local ativada
-            localStorage.setItem('finances_transactions', JSON.stringify(transactions));
-
-            form.reset();
-            toggleInvestmentFields(); // reset ui
-            showMessage('Transação adicionada com sucesso!');
-            calculateDashboard();
-        });
-
-        // Initial render
-        calculateDashboard();
+        // Renderização Inicial
+        atualizarInterface();
     </script>
 </body>
 </html>
