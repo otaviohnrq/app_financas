@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -57,7 +57,7 @@ class Token(BaseModel):
 class TransacaoSchema(BaseModel):
     desc: str
     valor: float
-    data: Date
+    data: date
     tipo: str
     subcategoria: Optional[str] = None
 
