@@ -1,175 +1,268 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Minhas Finanças 50/30/20</title>
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<style>
-:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{background:#111827;color:#f3f4f6}
-input[type=date]::-webkit-calendar-picker-indicator,input[type=month]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.7}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Minhas Finanças 50/30/20</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    body {
+      background: #111827;
+      color: #f3f4f6
+    }
+
+    input[type=date]::-webkit-calendar-picker-indicator,
+    input[type=month]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      opacity: .7
+    }
+  </style>
 </head>
+
 <body class="min-h-screen p-4 sm:p-6 font-sans">
-<div class="max-w-4xl mx-auto space-y-5">
+  <div class="max-w-4xl mx-auto space-y-5">
 
-  <header class="bg-gray-800 p-5 rounded-2xl border border-gray-700 space-y-4">
-    <div>
-      <h1 class="text-2xl font-bold text-emerald-400">🎯 Minhas Finanças</h1>
-      <p class="text-xs text-gray-400">Metas 50-30-20: onde seu salário deve ir</p>
-    </div>
-    <div class="grid grid-cols-2 gap-3">
+    <header class="bg-gray-800 p-5 rounded-2xl border border-gray-700 space-y-4">
       <div>
-        <label class="block text-xs text-gray-400 mb-1">Mês de referência</label>
-        <input type="month" id="mes" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm">
+        <h1 class="text-2xl font-bold text-emerald-400">🎯 Minhas Finanças</h1>
+        <p class="text-xs text-gray-400">Metas 50-30-20: onde seu salário deve ir</p>
       </div>
-      <div>
-        <label class="block text-xs text-gray-400 mb-1">Meu salário mensal (R$)</label>
-        <input type="number" step="0.01" inputmode="decimal" id="salario" placeholder="0,00" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Mês de referência</label>
+          <input type="month" id="mes" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Meu salário mensal (R$)</label>
+          <input type="number" step="0.01" inputmode="decimal" id="salario" placeholder="0,00"
+            class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm">
+        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <section class="grid grid-cols-3 gap-3 text-center">
-    <div class="bg-gray-800 p-3 rounded-2xl border border-gray-700">
-      <p class="text-[11px] uppercase text-gray-400">Entradas</p>
-      <p id="ov-entradas" class="text-sm sm:text-lg font-bold text-emerald-400">R$ 0,00</p>
-    </div>
-    <div class="bg-gray-800 p-3 rounded-2xl border border-gray-700">
-      <p class="text-[11px] uppercase text-gray-400">Base das metas</p>
-      <p id="ov-base" class="text-sm sm:text-lg font-bold">R$ 0,00</p>
-    </div>
-    <div class="bg-gray-800 p-3 rounded-2xl border border-gray-700">
-      <p class="text-[11px] uppercase text-gray-400">Saldo livre</p>
-      <p id="ov-saldo" class="text-sm sm:text-lg font-bold">R$ 0,00</p>
-    </div>
-  </section>
+    <section class="grid grid-cols-3 gap-3 text-center">
+      <div class="bg-gray-800 p-3 rounded-2xl border border-gray-700">
+        <p class="text-[11px] uppercase text-gray-400">Entradas</p>
+        <p id="ov-entradas" class="text-sm sm:text-lg font-bold text-emerald-400">R$ 0,00</p>
+      </div>
+      <div class="bg-gray-800 p-3 rounded-2xl border border-gray-700">
+        <p class="text-[11px] uppercase text-gray-400">Base das metas</p>
+        <p id="ov-base" class="text-sm sm:text-lg font-bold">R$ 0,00</p>
+      </div>
+      <div class="bg-gray-800 p-3 rounded-2xl border border-gray-700">
+        <p class="text-[11px] uppercase text-gray-400">Saldo livre</p>
+        <p id="ov-saldo" class="text-sm sm:text-lg font-bold">R$ 0,00</p>
+      </div>
+    </section>
 
-  <section id="cards" class="grid grid-cols-1 md:grid-cols-3 gap-4"></section>
+    <section id="cards" class="grid grid-cols-1 md:grid-cols-3 gap-4"></section>
 
-  <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-    <form id="form" class="bg-gray-800 p-5 rounded-2xl border border-gray-700 space-y-3 lg:col-span-1">
-      <h2 class="font-bold">➕ Nova transação</h2>
-      <input type="text" id="desc" placeholder="Descrição (Salário, Aluguel, ITSA4...)" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
-      <input type="number" step="0.01" inputmode="decimal" id="valor" placeholder="Valor (R$)" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
-      <input type="date" id="data" required class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
-      <select id="tipo" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
-        <option value="receita">Receita (+)</option>
-        <option value="essencial">Essencial (50%)</option>
-        <option value="naoessencial">Não essencial (30%)</option>
-        <option value="investimento">Investimento + Reserva (20%)</option>
-      </select>
-      <select id="sub" class="hidden w-full bg-gray-900 border border-amber-500/50 rounded-xl px-3 py-2.5 text-sm">
-        <option>Ações - ITSA4</option><option>Ações - MGLU3</option><option>FII - CDIB11</option>
-        <option>Renda Fixa - CDB</option><option>Reserva de emergência</option><option>Outros</option>
-      </select>
-      <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold py-3 rounded-xl">Adicionar</button>
-    </form>
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <form id="form" class="bg-gray-800 p-5 rounded-2xl border border-gray-700 space-y-3 lg:col-span-1">
+        <h2 class="font-bold">➕ Nova transação</h2>
+        <input type="text" id="desc" placeholder="Descrição (Salário, Aluguel, ITSA4...)" required
+          class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
+        <input type="number" step="0.01" inputmode="decimal" id="valor" placeholder="Valor (R$)" required
+          class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
+        <input type="date" id="data" required
+          class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
+        <select id="tipo" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
+          <option value="receita">Receita (+)</option>
+          <option value="essencial">Essencial (50%)</option>
+          <option value="naoessencial">Não essencial (30%)</option>
+          <option value="investimento">Investimento + Reserva (20%)</option>
+        </select>
+        <select id="sub" class="hidden w-full bg-gray-900 border border-amber-500/50 rounded-xl px-3 py-2.5 text-sm">
+          <option>Ações - ITSA4</option>
+          <option>Ações - MGLU3</option>
+          <option>FII - CDIB11</option>
+          <option>Renda Fixa - CDB</option>
+          <option>Reserva de emergência</option>
+          <option>Outros</option>
+        </select>
+        <button
+          class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold py-3 rounded-xl">Adicionar</button>
+      </form>
 
-    <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 lg:col-span-2">
-      <h2 class="font-bold mb-2">Distribuição do mês</h2>
-      <div class="relative h-56"><canvas id="grafico"></canvas></div>
-    </div>
-  </section>
+      <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 lg:col-span-2">
+        <h2 class="font-bold mb-2">Distribuição do mês</h2>
+        <div class="relative h-56"><canvas id="grafico"></canvas></div>
+      </div>
+    </section>
 
-  <section class="bg-gray-800 p-5 rounded-2xl border border-gray-700">
-    <h2 class="font-bold mb-3">Transações do mês</h2>
-    <div id="lista" class="space-y-2"></div>
-  </section>
+    <section class="bg-gray-800 p-5 rounded-2xl border border-gray-700">
+      <h2 class="font-bold mb-3">Transações do mês</h2>
+      <div id="lista" class="space-y-2"></div>
+    </section>
 
-  <details class="bg-gray-800 p-5 rounded-2xl border border-gray-700">
-    <summary class="font-bold cursor-pointer">💾 Backup e planilha</summary>
-    <p class="text-xs text-gray-400 my-3">Os dados ficam salvos só neste navegador. Gere o texto, copie e guarde. Para restaurar, cole o texto de backup e toque em Restaurar.</p>
-    <textarea id="backup" rows="5" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-xs" placeholder="O texto aparece aqui"></textarea>
-    <div class="flex flex-wrap gap-2 mt-2">
-      <button id="b-json" class="bg-gray-700 px-3 py-2 rounded-xl text-sm">Gerar backup</button>
-      <button id="b-csv" class="bg-gray-700 px-3 py-2 rounded-xl text-sm">Gerar CSV do mês</button>
-      <button id="b-rest" class="bg-amber-500 text-gray-950 px-3 py-2 rounded-xl text-sm font-semibold">Restaurar</button>
-    </div>
-  </details>
+    <details class="bg-gray-800 p-5 rounded-2xl border border-gray-700">
+      <summary class="font-bold cursor-pointer">💾 Backup e planilha</summary>
+      <p class="text-xs text-gray-400 my-3">Os dados ficam salvos só neste navegador. Gere o texto, copie e guarde. Para
+        restaurar, cole o texto de backup e toque em Restaurar.</p>
+      <textarea id="backup" rows="5" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-xs"
+        placeholder="O texto aparece aqui"></textarea>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <button id="b-json" class="bg-gray-700 px-3 py-2 rounded-xl text-sm">Gerar backup</button>
+        <button id="b-csv" class="bg-gray-700 px-3 py-2 rounded-xl text-sm">Gerar CSV do mês</button>
+        <button id="b-rest"
+          class="bg-amber-500 text-gray-950 px-3 py-2 rounded-xl text-sm font-semibold">Restaurar</button>
+      </div>
+    </details>
 
-</div>
+  </div>
 
-<script>
-const $ = id => document.getElementById(id);
-const brl = v => new Intl.NumberFormat('pt-BR', {style:'currency', currency:'BRL'}).format(v);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const hoje = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
-const lerLS = (k, f) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; } catch(e) { return f; } };
-const gravarLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+  <script>
+    const $ = id => document.getElementById(id);
+    const brl = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const hoje = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+    const lerLS = (k, f) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; } catch (e) { return f; } };
+    const gravarLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
 
-let tx = lerLS('fin_tx', []);
-let salario = lerLS('fin_salario', 0);
-let grafico = null;
+    // Endereço da API FastAPI rodando localmente
+    const API_URL = "http://127.0.0.1:8000/transacoes";
 
-const CATS = [
-  {k:'essencial', nome:'Essenciais', icone:'🏠', pct:.5, cor:'#3b82f6', dica:'Moradia, alimentação, saúde, transporte e contas fixas', max:true},
-  {k:'naoessencial', nome:'Não essenciais', icone:'🎉', pct:.3, cor:'#a855f7', dica:'Lazer, restaurantes, assinaturas e desejos', max:true},
-  {k:'investimento', nome:'Investimentos + Reserva', icone:'📈', pct:.2, cor:'#f59e0b', dica:'Reserva, investimentos e previdência', max:false}
-];
-const ROTULO = {receita:'Receita', essencial:'Essencial', naoessencial:'Não essencial', investimento:'Investimento'};
+    let tx = [];
+    let salario = lerLS('fin_salario', 0); // O valor do salário continua salvo no navegador
+    let grafico = null;
 
-$('mes').value = hoje().slice(0,7);
-$('data').value = hoje();
-$('salario').value = salario || '';
+    const CATS = [
+      { k: 'essencial', nome: 'Essenciais', icone: '🏠', pct: .5, cor: '#3b82f6', dica: 'Moradia, alimentação, saúde, transporte e contas fixas', max: true },
+      { k: 'naoessencial', nome: 'Não essenciais', icone: '🎉', pct: .3, cor: '#a855f7', dica: 'Lazer, restaurantes, assinaturas e desejos', max: true },
+      { k: 'investimento', nome: 'Investimentos + Reserva', icone: '📈', pct: .2, cor: '#f59e0b', dica: 'Reserva, investimentos e previdência', max: false }
+    ];
+    const ROTULO = { receita: 'Receita', essencial: 'Essencial', naoessencial: 'Não essencial', investimento: 'Investimento' };
 
-$('tipo').onchange = e => $('sub').classList.toggle('hidden', e.target.value !== 'investimento');
-$('mes').onchange = render;
-$('salario').oninput = e => { salario = parseFloat(e.target.value) || 0; gravarLS('fin_salario', salario); render(); };
+    // 1. BUSCAR TRANSAÇÕES DA API (GET)
+    async function carregarTransacoes() {
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error("Falha ao carregar dados da API");
+        const dados = await res.json();
 
-$('form').onsubmit = e => {
-  e.preventDefault();
-  const tipo = $('tipo').value;
-  tx.push({id: Date.now(), desc: $('desc').value.trim(), valor: parseFloat($('valor').value), data: $('data').value, tipo, sub: tipo === 'investimento' ? $('sub').value : null});
-  gravarLS('fin_tx', tx);
-  if ($('data').value.slice(0,7) !== $('mes').value) $('mes').value = $('data').value.slice(0,7);
-  $('desc').value = ''; $('valor').value = '';
-  render();
-};
+        // Mapeia o campo 'subcategoria' vindo da API para 'sub' utilizado na interface
+        tx = dados.map(t => ({
+          id: t.id,
+          desc: t.desc,
+          valor: t.valor,
+          data: t.data,
+          tipo: t.tipo,
+          sub: t.subcategoria
+        }));
 
-function excluir(id) { tx = tx.filter(t => t.id !== id); gravarLS('fin_tx', tx); render(); }
+        render();
+      } catch (err) {
+        console.error("Erro ao conectar com a API Backend:", err);
+      }
+    }
 
-function render() {
-  const mes = $('mes').value;
-  const lista = tx.filter(t => (t.data || '').startsWith(mes));
-  const soma = k => lista.filter(t => t.tipo === k).reduce((a, t) => a + t.valor, 0);
-  const entradas = soma('receita');
-  const base = salario > 0 ? salario : entradas;
-  const real = {essencial: soma('essencial'), naoessencial: soma('naoessencial'), investimento: soma('investimento')};
-  const saldo = entradas - real.essencial - real.naoessencial - real.investimento;
+    $('mes').value = hoje().slice(0, 7);
+    $('data').value = hoje();
+    $('salario').value = salario || '';
 
-  $('ov-entradas').textContent = brl(entradas);
-  $('ov-base').textContent = brl(base);
-  $('ov-saldo').textContent = brl(saldo);
-  $('ov-saldo').className = 'text-sm sm:text-lg font-bold ' + (saldo >= 0 ? 'text-emerald-400' : 'text-rose-400');
+    $('tipo').onchange = e => $('sub').classList.toggle('hidden', e.target.value !== 'investimento');
+    $('mes').onchange = render;
+    $('salario').oninput = e => { salario = parseFloat(e.target.value) || 0; gravarLS('fin_salario', salario); render(); };
 
-  $('cards').innerHTML = CATS.map(c => {
-    const meta = base * c.pct, r = real[c.k];
-    const pctReal = base > 0 ? r / base * 100 : 0;
-    const dif = meta - r;
-    const ok = c.max ? r <= meta : r >= meta * 0.95;
-    const status = ok ? '✅ OK' : (c.max ? '⚠️ Estourou' : '⚠️ Abaixo da meta');
-    const larg = meta > 0 ? Math.min(100, r / meta * 100) : 0;
-    return `<div class="bg-gray-800 p-4 rounded-2xl border border-gray-700">
+    // 2. ENVIAR NOVA TRANSAÇÃO PARA A API (POST)
+    $('form').onsubmit = async e => {
+      e.preventDefault();
+      const tipo = $('tipo').value;
+
+      const novaTransacao = {
+        desc: $('desc').value.trim(),
+        valor: parseFloat($('valor').value),
+        data: $('data').value,
+        tipo: tipo,
+        subcategoria: tipo === 'investimento' ? $('sub').value : null
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(novaTransacao)
+        });
+
+        if (res.ok) {
+          await carregarTransacoes(); // Recarrega os dados diretamente do banco
+          if ($('data').value.slice(0, 7) !== $('mes').value) $('mes').value = $('data').value.slice(0, 7);
+          $('desc').value = '';
+          $('valor').value = '';
+        } else {
+          alert("Erro ao salvar transação no backend.");
+        }
+      } catch (err) {
+        alert("Não foi possível conectar com o servidor backend.");
+      }
+    };
+
+    // 3. EXCLUIR TRANSAÇÃO NA API (DELETE)
+    async function excluir(id) {
+      try {
+        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          await carregarTransacoes(); // Atualiza a lista após exclusão
+        } else {
+          alert("Erro ao excluir transação no backend.");
+        }
+      } catch (err) {
+        alert("Erro de conexão ao tentar excluir.");
+      }
+    }
+
+    function render() {
+      const mes = $('mes').value;
+      const lista = tx.filter(t => (t.data || '').startsWith(mes));
+      const soma = k => lista.filter(t => t.tipo === k).reduce((a, t) => a + t.valor, 0);
+      const entradas = soma('receita');
+      const base = salario > 0 ? salario : entradas;
+      const real = { essencial: soma('essencial'), naoessencial: soma('naoessencial'), investimento: soma('investimento') };
+      const saldo = entradas - real.essencial - real.naoessencial - real.investimento;
+
+      $('ov-entradas').textContent = brl(entradas);
+      $('ov-base').textContent = brl(base);
+      $('ov-saldo').textContent = brl(saldo);
+      $('ov-saldo').className = 'text-sm sm:text-lg font-bold ' + (saldo >= 0 ? 'text-emerald-400' : 'text-rose-400');
+
+      $('cards').innerHTML = CATS.map(c => {
+        const meta = base * c.pct;
+        const r = real[c.k];
+        const pctReal = base > 0 ? (r / base) * 100 : 0;
+        const dif = meta - r;
+        const ok = c.max ? r <= meta : r >= meta * 0.95;
+        const status = ok ? '✅ OK' : (c.max ? '⚠️ Estourou' : '⚠️ Abaixo da meta');
+        const larg = meta > 0 ? Math.min(100, (r / meta) * 100) : 0;
+        return `<div class="bg-gray-800 p-4 rounded-2xl border border-gray-700">
       <div class="flex justify-between items-start gap-2">
-        <div><p class="font-bold" style="color:${c.cor}">${c.icone} ${c.nome} (${c.pct*100}%)</p><p class="text-[11px] text-gray-500">${c.dica}</p></div>
+        <div><p class="font-bold" style="color:${c.cor}">${c.icone} ${c.nome} (${c.pct * 100}%)</p><p class="text-[11px] text-gray-500">${c.dica}</p></div>
         <span class="text-xs font-semibold whitespace-nowrap ${ok ? 'text-emerald-400' : 'text-rose-400'}">${status}</span>
       </div>
-      <p class="text-xl font-bold mt-3">${brl(r)} <span class="text-xs font-normal text-gray-400">(${pctReal.toFixed(1).replace('.',',')}%)</span></p>
-      <p class="text-xs text-gray-400">Meta: ${brl(meta)} (${c.pct*100},0%)</p>
+      <p class="text-xl font-bold mt-3">${brl(r)} <span class="text-xs font-normal text-gray-400">(${pctReal.toFixed(1).replace('.', ',')}%)</span></p>
+      <p class="text-xs text-gray-400">Meta: ${brl(meta)} (${c.pct * 100},0%)</p>
       <div class="w-full bg-gray-900 rounded-full h-2 mt-3 overflow-hidden"><div class="h-2 rounded-full" style="width:${larg}%;background:${ok ? c.cor : '#f43f5e'}"></div></div>
       <p class="text-xs mt-2 ${dif < 0 ? 'text-rose-400' : 'text-gray-300'}">Diferença: ${dif < 0 ? '(' + brl(-dif) + ')' : brl(dif)}</p>
     </div>`;
-  }).join('');
+      }).join('');
 
-  const ordenada = [...lista].sort((a, b) => b.data.localeCompare(a.data) || b.id - a.id);
-  $('lista').innerHTML = ordenada.length ? ordenada.map(t => {
-    const cor = {receita:'text-emerald-400', essencial:'text-blue-400', naoessencial:'text-purple-400', investimento:'text-amber-400'}[t.tipo];
-    const [a, m, d] = t.data.split('-');
-    return `<div class="flex items-center justify-between gap-2 p-3 bg-gray-900/60 rounded-xl border border-gray-700/50">
+      const ordenada = [...lista].sort((a, b) => b.data.localeCompare(a.data) || b.id - a.id);
+      $('lista').innerHTML = ordenada.length ? ordenada.map(t => {
+        const cor = { receita: 'text-emerald-400', essencial: 'text-blue-400', naoessencial: 'text-purple-400', investimento: 'text-amber-400' }[t.tipo];
+        const [a, m, d] = t.data.split('-');
+        return `<div class="flex items-center justify-between gap-2 p-3 bg-gray-900/60 rounded-xl border border-gray-700/50">
       <div class="min-w-0">
         <p class="text-sm font-medium truncate">${esc(t.desc)}</p>
         <p class="text-xs text-gray-400">${d}/${m}/${a} · <span class="${cor}">${ROTULO[t.tipo]}</span>${t.sub ? ' · ' + esc(t.sub) : ''}</p>
@@ -179,37 +272,29 @@ function render() {
         <button onclick="excluir(${t.id})" class="text-gray-500 hover:text-rose-400 px-1" title="Excluir">✕</button>
       </div>
     </div>`;
-  }).join('') : '<p class="text-sm text-gray-500 text-center py-4">Nenhuma transação neste mês.</p>';
+      }).join('') : '<p class="text-sm text-gray-500 text-center py-4">Nenhuma transação neste mês.</p>';
 
-  if (grafico) grafico.destroy();
-  grafico = new Chart($('grafico').getContext('2d'), {
-    type: 'doughnut',
-    data: {labels: CATS.map(c => c.nome), datasets: [{data: CATS.map(c => real[c.k]), backgroundColor: CATS.map(c => c.cor), borderWidth: 0}]},
-    options: {responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: {legend: {position: 'bottom', labels: {color: '#9ca3af'}}}}
-  });
-}
+      if (grafico) grafico.destroy();
+      grafico = new Chart($('grafico').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: CATS.map(c => c.nome), datasets: [{ data: CATS.map(c => real[c.k]), backgroundColor: CATS.map(c => c.cor), borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } } }
+      });
+    }
 
-$('b-json').onclick = () => { $('backup').value = JSON.stringify({salario, tx}); $('backup').select(); };
-$('b-csv').onclick = () => {
-  const mes = $('mes').value;
-  const linhas = tx.filter(t => t.data.startsWith(mes)).sort((a, b) => a.data.localeCompare(b.data))
-    .map(t => [t.data, '"' + t.desc.replace(/"/g, '""') + '"', String(t.valor).replace('.', ','), ROTULO[t.tipo], t.sub || ''].join(';'));
-  $('backup').value = ['Data;Descrição;Valor;Tipo;Ativo', ...linhas].join('\n');
-  $('backup').select();
-};
-$('b-rest').onclick = () => {
-  try {
-    const o = JSON.parse($('backup').value);
-    if (!Array.isArray(o.tx)) throw 0;
-    tx = o.tx; salario = o.salario || 0;
-    gravarLS('fin_tx', tx); gravarLS('fin_salario', salario);
-    $('salario').value = salario || '';
-    render();
-    $('backup').value = 'Backup restaurado.';
-  } catch(e) { $('backup').value = 'Texto de backup inválido.'; }
-};
+    // Opções de Backup
+    $('b-json').onclick = () => { $('backup').value = JSON.stringify({ salario, tx }); $('backup').select(); };
+    $('b-csv').onclick = () => {
+      const mes = $('mes').value;
+      const linhas = tx.filter(t => t.data.startsWith(mes)).sort((a, b) => a.data.localeCompare(b.data))
+        .map(t => [t.data, '"' + t.desc.replace(/"/g, '""') + '"', String(t.valor).replace('.', ','), ROTULO[t.tipo], t.sub || ''].join(';'));
+      $('backup').value = ['Data;Descrição;Valor;Tipo;Ativo', ...linhas].join('\n');
+      $('backup').select();
+    };
 
-render();
-</script>
+    // Execução inicial: busca os dados no servidor ao carregar a página
+    carregarTransacoes();
+  </script>
 </body>
+
 </html>
