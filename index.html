@@ -32,59 +32,13 @@
   </style>
 </head>
 
-<body class="min-h-screen p-4 sm:p-6 font-sans flex flex-col justify-center items-center">
-
-  <!-- TELA DE LOGIN / CADASTRO (Exibida por padrão quando não há token) -->
-  <div id="secao-auth" class="w-full max-w-md bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-4">
-    <div class="text-center">
-      <h1 class="text-2xl font-bold text-emerald-400">🎯 Minhas Finanças</h1>
-      <p class="text-xs text-gray-400 mt-1">Entre com sua conta para gerenciar seu orçamento</p>
-    </div>
-
-    <!-- Abas Alternadoras -->
-    <div class="flex border-b border-gray-700 text-sm font-semibold">
-      <button id="aba-login" onclick="alternarAbaAuth('login')"
-        class="w-1/2 py-2 text-emerald-400 border-b-2 border-emerald-400">Entrar</button>
-      <button id="aba-cadastro" onclick="alternarAbaAuth('cadastro')" class="w-1/2 py-2 text-gray-400">Criar
-        Conta</button>
-    </div>
-
-    <!-- Form Login -->
-    <form id="form-auth" class="space-y-3">
-      <div>
-        <label class="block text-xs text-gray-400 mb-1">E-mail</label>
-        <input type="email" id="auth-email" required placeholder="seu@email.com"
-          class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
-      </div>
-      <div>
-        <label class="block text-xs text-gray-400 mb-1">Senha</label>
-        <input type="password" id="auth-password" required placeholder="••••••••"
-          class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm">
-      </div>
-      <button id="btn-auth-submit"
-        class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold py-3 rounded-xl transition">
-        Entrar
-      </button>
-    </form>
-    <p id="msg-auth-erro" class="text-xs text-rose-400 text-center hidden"></p>
-  </div>
-
-  <!-- PAINEL PRINCIPAL (Oculto por padrão, visível após autenticação) -->
-  <div id="secao-app" class="w-full max-w-4xl mx-auto space-y-5 hidden">
+<body class="min-h-screen p-4 sm:p-6 font-sans">
+  <div class="max-w-4xl mx-auto space-y-5">
 
     <header class="bg-gray-800 p-5 rounded-2xl border border-gray-700 space-y-4">
-      <div class="flex justify-between items-start">
-        <div>
-          <h1 class="text-2xl font-bold text-emerald-400">🎯 Minhas Finanças</h1>
-          <p class="text-xs text-gray-400">Metas 50-30-20: onde seu salário deve ir</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <span id="user-email-display" class="text-xs text-gray-400 hidden sm:inline"></span>
-          <button onclick="fazerLogout()"
-            class="bg-gray-700 hover:bg-rose-500/20 hover:text-rose-400 text-xs text-gray-300 px-3 py-1.5 rounded-xl border border-gray-600 transition">
-            Sair 🚪
-          </button>
-        </div>
+      <div>
+        <h1 class="text-2xl font-bold text-emerald-400">🎯 Minhas Finanças</h1>
+        <p class="text-xs text-gray-400">Metas 50-30-20: onde seu salário deve ir</p>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div>
@@ -175,10 +129,8 @@
     const lerLS = (k, f) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; } catch (e) { return f; } };
     const gravarLS = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
 
-    // URL Base da API
-    const API_BASE = "http://127.0.0.1:8000";
+    const API_URL = "http://127.0.0.1:8000/transacoes";
 
-    let modeAuth = 'login'; // 'login' ou 'cadastro'
     let tx = [];
     let salario = lerLS('fin_salario', 0);
     let grafico = null;
@@ -190,122 +142,12 @@
     ];
     const ROTULO = { receita: 'Receita', essencial: 'Essencial', naoessencial: 'Não essencial', investimento: 'Investimento' };
 
-    // Utilitário para adicionar o token JWT no cabeçalho
-    function getAuthHeaders() {
-      const token = localStorage.getItem('auth_token');
-      return {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      };
-    }
-
-    // Controladores de Autenticação
-    function alternarAbaAuth(modo) {
-      modeAuth = modo;
-      $('msg-auth-erro').classList.add('hidden');
-      if (modo === 'login') {
-        $('aba-login').className = 'w-1/2 py-2 text-emerald-400 border-b-2 border-emerald-400';
-        $('aba-cadastro').className = 'w-1/2 py-2 text-gray-400';
-        $('btn-auth-submit').textContent = 'Entrar';
-      } else {
-        $('aba-cadastro').className = 'w-1/2 py-2 text-emerald-400 border-b-2 border-emerald-400';
-        $('aba-login').className = 'w-1/2 py-2 text-gray-400';
-        $('btn-auth-submit').textContent = 'Criar Conta';
-      }
-    }
-
-    $('form-auth').onsubmit = async e => {
-      e.preventDefault();
-      const email = $('auth-email').value.trim();
-      const password = $('auth-password').value;
-      $('msg-auth-erro').classList.add('hidden');
-
-      if (modeAuth === 'cadastro') {
-        try {
-          const res = await fetch(`${API_BASE}/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-          });
-          const data = await res.json();
-          if (res.ok) {
-            alert("Conta criada com sucesso! Realizando login...");
-            await realizarLogin(email, password);
-          } else {
-            $('msg-auth-erro').textContent = data.detail || 'Erro ao criar conta';
-            $('msg-auth-erro').classList.remove('hidden');
-          }
-        } catch (err) {
-          $('msg-auth-erro').textContent = 'Erro de conexão com o servidor.';
-          $('msg-auth-erro').classList.remove('hidden');
-        }
-      } else {
-        await realizarLogin(email, password);
-      }
-    };
-
-    async function realizarLogin(email, password) {
-      const formData = new URLSearchParams();
-      formData.append('username', email);
-      formData.append('password', password);
-
-      try {
-        const res = await fetch(`${API_BASE}/token`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: formData
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          localStorage.setItem('auth_token', data.access_token);
-          localStorage.setItem('user_email', email);
-          iniciarAplicacao();
-        } else {
-          $('msg-auth-erro').textContent = data.detail || 'E-mail ou senha inválidos.';
-          $('msg-auth-erro').classList.remove('hidden');
-        }
-      } catch (err) {
-        $('msg-auth-erro').textContent = 'Servidor indisponível.';
-        $('msg-auth-erro').classList.remove('hidden');
-      }
-    }
-
-    function fazerLogout() {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_email');
-      $('secao-app').classList.add('hidden');
-      $('secao-auth').classList.remove('hidden');
-    }
-
-    function iniciarAplicacao() {
-      const token = localStorage.getItem('auth_token');
-      if (!token) {
-        fazerLogout();
-        return;
-      }
-      $('secao-auth').classList.add('hidden');
-      $('secao-app').classList.remove('hidden');
-      $('user-email-display').textContent = localStorage.getItem('user_email') || '';
-
-      $('mes').value = hoje().slice(0, 7);
-      $('data').value = hoje();
-      $('salario').value = salario || '';
-
-      carregarTransacoes();
-    }
-
-    // Operações da API Protegida
     async function carregarTransacoes() {
       try {
-        const res = await fetch(`${API_BASE}/transacoes`, { headers: getAuthHeaders() });
-
-        if (res.status === 401) {
-          fazerLogout();
-          return;
-        }
-
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error("Falha ao carregar dados da API");
         const dados = await res.json();
+
         tx = dados.map(t => ({
           id: t.id,
           desc: t.desc,
@@ -317,9 +159,13 @@
 
         render();
       } catch (err) {
-        console.error("Erro ao buscar transações:", err);
+        console.error("Erro ao conectar com a API Backend:", err);
       }
     }
+
+    $('mes').value = hoje().slice(0, 7);
+    $('data').value = hoje();
+    $('salario').value = salario || '';
 
     $('tipo').onchange = e => $('sub').classList.toggle('hidden', e.target.value !== 'investimento');
     $('mes').onchange = render;
@@ -328,6 +174,7 @@
     $('form').onsubmit = async e => {
       e.preventDefault();
       const tipo = $('tipo').value;
+
       const novaTransacao = {
         desc: $('desc').value.trim(),
         valor: parseFloat($('valor').value),
@@ -337,37 +184,35 @@
       };
 
       try {
-        const res = await fetch(`${API_BASE}/transacoes`, {
+        const res = await fetch(API_URL, {
           method: 'POST',
-          headers: getAuthHeaders(),
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(novaTransacao)
         });
 
         if (res.ok) {
           await carregarTransacoes();
           if ($('data').value.slice(0, 7) !== $('mes').value) $('mes').value = $('data').value.slice(0, 7);
-          $('desc').value = ''; $('valor').value = '';
-        } else if (res.status === 401) {
-          fazerLogout();
+          $('desc').value = '';
+          $('valor').value = '';
+        } else {
+          alert("Erro ao salvar transação no backend.");
         }
       } catch (err) {
-        alert("Erro ao salvar transação no backend.");
+        alert("Não foi possível conectar com o servidor backend.");
       }
     };
 
     async function excluir(id) {
       try {
-        const res = await fetch(`${API_BASE}/transacoes/${id}`, {
-          method: 'DELETE',
-          headers: getAuthHeaders()
-        });
+        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
         if (res.ok) {
           await carregarTransacoes();
-        } else if (res.status === 401) {
-          fazerLogout();
+        } else {
+          alert("Erro ao excluir transação no backend.");
         }
       } catch (err) {
-        alert("Erro ao excluir transação.");
+        alert("Erro de conexão ao tentar excluir.");
       }
     }
 
@@ -429,10 +274,16 @@
       });
     }
 
-    // Checa login ao carregar a página
-    if (localStorage.getItem('auth_token')) {
-      iniciarAplicacao();
-    }
+    $('b-json').onclick = () => { $('backup').value = JSON.stringify({ salario, tx }); $('backup').select(); };
+    $('b-csv').onclick = () => {
+      const mes = $('mes').value;
+      const linhas = tx.filter(t => t.data.startsWith(mes)).sort((a, b) => a.data.localeCompare(b.data))
+        .map(t => [t.data, '"' + t.desc.replace(/"/g, '""') + '"', String(t.valor).replace('.', ','), ROTULO[t.tipo], t.sub || ''].join(';'));
+      $('backup').value = ['Data;Descrição;Valor;Tipo;Ativo', ...linhas].join('\n');
+      $('backup').select();
+    };
+
+    carregarTransacoes();
   </script>
 </body>
 
